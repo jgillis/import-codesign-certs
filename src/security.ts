@@ -176,11 +176,8 @@ async function createKeychain(
     await exec.exec('security', createArgs, options)
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('A keychain with the same name already exists')) {
-        // Skip the error
-      } else {
-        throw error
-      }
+      // print error
+      console.log(error.message)
     }
   }
 
