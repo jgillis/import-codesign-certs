@@ -3954,7 +3954,16 @@ function importPkcs12(keychain, p12FilePath, p12Password, options) {
             '-P',
             p12Password
         ];
-        yield exec.exec('security', importArgs, options);
+        try {
+            yield exec.exec('security', importArgs, options);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                // print error
+                console.log(error.message);
+                // pass
+            }
+        }
     });
 }
 /**
@@ -3997,7 +4006,22 @@ function unlockKeychain(keychain, password, options) {
 function createKeychain(keychain, password, options) {
     return __awaiter(this, void 0, void 0, function* () {
         const createArgs = ['create-keychain', '-p', password, keychain];
-        yield exec.exec('security', createArgs, options);
+        // Create the keychain using exec.exec
+        // We need to catching "SecKeychainCreate signing_temp.keychain: A keychain with the same name already exists." error, i.e. return code 48
+        // https://developer.apple.com/library/archive/documentation/Security/Reference/keychainservices/index.html#//apple_ref/doc/uid/TP30000898-CH204-TPXREF101
+        try {
+            yield exec.exec('security', createArgs, options);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                if (error.message.includes('A keychain with the same name already exists')) {
+                    // Skip the error
+                }
+                else {
+                    throw error;
+                }
+            }
+        }
         // Set automatic keychain lock timeout to 6 hours.
         const setSettingsArgs = [
             'set-keychain-settings',
