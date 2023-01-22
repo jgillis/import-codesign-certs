@@ -54,7 +54,14 @@ async function updateKeychainList(
     'login.keychain'
   ]
 
-  await exec.exec('security', args, options)
+  try {
+    await exec.exec('security', args, options)
+  } catch (error) {
+    if (error instanceof Error) {
+      // print error
+      console.log(error.message)
+    }
+  }
 }
 
 /**
@@ -188,5 +195,12 @@ async function createKeychain(
     '21600',
     keychain
   ]
-  await exec.exec('security', setSettingsArgs, options)
+  try {
+    await exec.exec('security', setSettingsArgs, options)
+  } catch (error) {
+    if (error instanceof Error) {
+      // print error
+      console.log(error.message)
+    }
+  }
 }

@@ -3910,7 +3910,15 @@ function updateKeychainList(keychain, options) {
             keychain,
             'login.keychain'
         ];
-        yield exec.exec('security', args, options);
+        try {
+            yield exec.exec('security', args, options);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                // print error
+                console.log(error.message);
+            }
+        }
     });
 }
 /**
@@ -4025,7 +4033,15 @@ function createKeychain(keychain, password, options) {
             '21600',
             keychain
         ];
-        yield exec.exec('security', setSettingsArgs, options);
+        try {
+            yield exec.exec('security', setSettingsArgs, options);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                // print error
+                console.log(error.message);
+            }
+        }
     });
 }
 
